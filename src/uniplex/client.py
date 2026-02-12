@@ -32,7 +32,6 @@ from .types import (
     Gate,
     GateCreate,
     GateUpdate,
-    Issuer,
     Passport,
     PassportIssue,
     PublishResult,
@@ -199,14 +198,6 @@ class UniplexClient:
         return self._post(f"/api/passports/{passport_id}/reissue", json=body)
 
     # ======================================================================
-    # Issuers
-    # ======================================================================
-
-    def list_issuers(self) -> list[dict[str, Any]]:
-        """List your issuers."""
-        return self._get("/api/gates")  # Issuers are fetched via the MCP tool pattern
-
-    # ======================================================================
     # Attestations
     # ======================================================================
 
@@ -273,6 +264,10 @@ class UniplexClient:
         """Get a specific published catalog version."""
         return self._get(f"/api/gates/{gate_id}/catalog/{version}")
 
+    def get_catalog_impact(self, gate_id: str) -> dict[str, Any]:
+        """Get impact analysis for pending catalog changes."""
+        return self._get(f"/api/gates/{gate_id}/catalog/impact")
+
     # ======================================================================
     # Gate Check (Authorization)
     # ======================================================================
@@ -328,6 +323,10 @@ class UniplexClient:
             json={"template_slug": template_slug},
         )
 
+    def create_constraint_template(self, **kwargs: Any) -> dict[str, Any]:
+        """Create a user constraint template."""
+        return self._post("/api/constraint-templates", json=kwargs)
+
     # ======================================================================
     # Enforcement (CEL)
     # ======================================================================
@@ -370,7 +369,7 @@ class UniplexClient:
 
     def verify_enforcement_attestation(self, attestation_id: str) -> dict[str, Any]:
         """Verify the cryptographic signature of an enforcement attestation."""
-        return self._get(f"/api/enforcement/{attestation_id}/verify")
+        return self._post(f"/api/enforcement/{attestation_id}/verify")
 
     # ======================================================================
     # Anonymous Access
@@ -385,6 +384,10 @@ class UniplexClient:
     ) -> dict[str, Any]:
         """Configure anonymous access policy on a gate."""
         return self._put(f"/api/gates/{gate_id}/anonymous-policy", json=kwargs)
+
+    def get_anonymous_log(self, gate_id: str) -> list[dict[str, Any]]:
+        """Get the anonymous access audit log for a gate."""
+        return self._get(f"/api/gates/{gate_id}/anonymous-log")
 
     # ======================================================================
     # Cumulative State
@@ -530,7 +533,7 @@ class UniplexClient:
         self, settlement_id: str, status: str
     ) -> dict[str, Any]:
         """Transition a settlement to a new status."""
-        return self._patch(f"/api/billing/{settlement_id}/status", json={"status": status})
+        return self._post(f"/api/billing/{settlement_id}/status", json={"status": status})
 
     # ======================================================================
     # Commerce: SLA Compliance
@@ -575,3 +578,27 @@ class UniplexClient:
         if requested_constraints is not None:
             body["requested_constraints"] = requested_constraints
         return self._post("/api/authorize/dry-run", json=body)
+
+    # ======================================================================
+    # API Keys
+    # ======================================================================
+
+    def list_api_keys(self) -> list[dict[str, Any]]:
+        """List your API keys."""
+        return self._get("/api/users/api-keys")
+
+    def create_api_key(
+        self,
+        *,
+        name: str,
+        scopes: Optional[list[str]] = None,
+    ) -> dict[str, Any]:
+        """Create a new API key."""
+        body: dict[str, Any] = {"name": name}
+        if scopes is not None:
+            body["scopes"] = scopes
+        return self._post("/api/users/api-keys", json=body)
+
+    def revoke_api_key(self, key_id: str) -> dict[str, Any]:
+        """Revoke an API key."""
+        return self._delete(f"/api/users/api-keys/{key_id}")

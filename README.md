@@ -25,7 +25,7 @@ This SDK lets you manage both sides — gates, passports, issuers, attestations,
 
 - A **Uniplex account** — sign up at the [Uniplex Dashboard](https://uniplex.ai)
 - An **API key** — generate one from the dashboard
-- **Python 3.10+**
+- **Python 3.9+**
 
 ---
 
@@ -141,6 +141,7 @@ client.create_catalog("gate_my-service", permissions=[...])
 client.publish_catalog("gate_my-service", change_summary="Added search permission")
 client.list_catalog_versions("gate_my-service")
 client.get_catalog_version("gate_my-service", version=1)
+client.get_catalog_impact("gate_my-service")
 ```
 
 ### Constraints
@@ -151,6 +152,7 @@ client.set_constraints("pp_xxx", {"read": {"core:rate:max_per_minute": 100}})
 client.list_constraint_types(category="cost")
 client.list_constraint_templates(category="security")
 client.apply_constraint_template("pp_xxx", "conservative-agent")
+client.create_constraint_template(slug="my-template", name="My Template", constraints={...})
 ```
 
 ### Enforcement (CEL)
@@ -167,6 +169,7 @@ client.verify_enforcement_attestation("enf_xxx")
 ```python
 client.get_anonymous_policy("gate_my-service")
 client.set_anonymous_policy("gate_my-service", enabled=True, allowed_actions=["read"])
+client.get_anonymous_log("gate_my-service")
 ```
 
 ### Commerce
@@ -197,6 +200,14 @@ sla = client.get_sla_compliance("gate_my-service", period_start="2025-01-01", pe
 ```python
 client.get_cumulative_state("pp_xxx")
 client.reset_cumulative_state("pp_xxx", window_type="daily")
+```
+
+### API Keys
+
+```python
+client.list_api_keys()
+client.create_api_key(name="My Key", scopes=["gates:read", "passports:write"])
+client.revoke_api_key("key_xxx")
 ```
 
 ---
