@@ -51,5 +51,8 @@ Homepage = "https://uniplex.ai"
 Documentation = "https://uniplex.ai/guide"
 Repository = "https://github.com/standard-logic/uniplex-python"
 
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/uniplex"]
