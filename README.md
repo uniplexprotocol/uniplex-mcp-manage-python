@@ -5,7 +5,7 @@
 
 **The trust layer for AI agents.** Gates protect your tools. Passports authorize your agents. Everything verified locally.
 
-Python client for the [Uniplex](https://uniplex.ai) REST API. Manage gates, passports, issuers, attestations, constraints, catalogs, enforcement, commerce, and billing programmatically.
+Python client for the [Uniplex](https://uniplex.ai) REST API. Manage gates, passports, attestations, constraints, catalogs, enforcement, commerce, and billing programmatically.
 
 ---
 
@@ -17,7 +17,7 @@ Python client for the [Uniplex](https://uniplex.ai) REST API. Manage gates, pass
 
 **Passports** are signed credentials that agents carry. Each passport specifies who issued it, what the agent is allowed to do, and under what constraints — scoped to specific actions, resources, and time windows.
 
-This SDK lets you manage both sides — gates, passports, issuers, attestations, constraints, enforcement, and commerce — from your own Python applications, scripts, and agent frameworks.
+This SDK lets you manage both sides — gates, passports, attestations, constraints, enforcement, and commerce — from your own Python applications, scripts, and agent frameworks.
 
 ---
 
@@ -116,6 +116,13 @@ client.update_gate("gate_my-service", name="Updated Name")
 client.delete_gate("gate_my-service")
 ```
 
+### Gate Check
+
+```python
+client.check_gate("gate_my-service", action="read", passport_id="pp_xxx")
+client.authorize_dry_run(gate_id="gate_my-service", passport_id="pp_xxx", action="read")
+```
+
 ### Passports
 
 ```python
@@ -189,6 +196,7 @@ attestation = client.issue_consumption_attestation(
 # Billing & settlement
 client.generate_settlement(gate_id="gate_my-service", period_type="monthly", period_start="2025-01-01", period_end="2025-01-31")
 client.list_settlements(gate_id="gate_my-service", status="pending")
+client.get_settlement("stl_xxx")
 client.update_settlement_status("stl_xxx", "invoiced")
 
 # SLA compliance
@@ -312,10 +320,9 @@ pip install -e ".[dev]"
 ## Learn More
 
 - [Uniplex Dashboard](https://uniplex.ai) — Create your account and manage gates, passports, and API keys
-- [Documentation & Guides](https://uniplex.io)
+- [Documentation & Guides](https://uniplex.ai)
 - [Protocol Specification](https://github.com/uniplexprotocol/uniplex)
-- [Protocol SDK (Python)](https://pypi.org/project/uniplex/)
-- [Protocol SDK (TypeScript)](https://www.npmjs.com/package/uniplex)
+- [MCP SDK (TypeScript)](https://www.npmjs.com/package/uniplex-mcp-sdk) · [MCP SDK (Python)](https://pypi.org/project/uniplex-mcp-sdk/)
 - [Management MCP Server (TypeScript)](https://www.npmjs.com/package/uniplex-mcp-manage)
 - [Discussions](https://github.com/uniplexprotocol/uniplex/discussions) — Questions and ideas
 - [@uniplexprotocol](https://x.com/uniplexprotocol) — Updates and announcements
